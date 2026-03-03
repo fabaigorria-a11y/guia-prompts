@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Prompts — Tipos de Documentos (Oscuro)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #f0ede6;
+    --paper: #1a1a2e;
+    --accent: #e8b84b;
+    --accent2: #16213e;
+    --muted: #8a9bb5;
+    --card: #0f3460;
+    --border: #1e4080;
+    --tag-bg: #0d2a50;
+    --tag-text: #a8c8f0;
+    --highlight: #1e3a5f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d0d1a 0%, #16213e 60%, #0f3460 100%);
+    color: white;
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.02) 40px,
+      rgba(255,255,255,0.02) 80px
+    );
+  }
+
+  .header-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 0.75rem;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    position: relative;
+  }
+
+  header h1 span {
+    color: #e8b84b;
+  }
+
+  header p {
+    margin-top: 0.9rem;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.7);
+    font-weight: 300;
+    position: relative;
+  }
+
+  /* SEARCH */
+  .search-wrap {
+    max-width: 680px;
+    margin: -1.6rem auto 0;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: #0f3460;
+    border: 1.5px solid #2a5090;
+    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    gap: 0.6rem;
+  }
+
+  .search-box svg { color: var(--muted); flex-shrink: 0; }
+
+  .search-box input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: #f0ede6;
+    background: transparent;
+  }
+
+  .search-box input::placeholder { color: var(--muted); }
+
+  /* MAIN */
+  main {
+    max-width: 960px;
+    margin: 3rem auto 4rem;
+    padding: 0 1.5rem;
+  }
+
+  .section-intro {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: #6a8bb0;
+    font-size: 0.9rem;
+  }
+
+  /* CATEGORY CARDS */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    padding: 1rem 1.25rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid #1e4080;
+  }
+
+  .icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent2);
+    line-height: 1.3;
+  }
+
+  .card-prompt-label {
+    font-size: 0.7rem;
+    color: #6a8bb0;
+    margin-top: 0.1rem;
+  }
+
+  .card-body {
+    padding: 1rem 1.25rem 1.2rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 0.72rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    border: 1px solid #d5e0f5;
+    line-height: 1.4;
+    cursor: default;
+    transition: background 0.15s;
+  }
+
+  .tag:hover {
+    background: #1a3a6a;
+  }
+
+  /* COLOR THEMES per category */
+  .cat-notarial .icon { background: #3a1a1a; }
+  .cat-comercial .icon { background: #1a2a4a; }
+  .cat-cooperativa .icon { background: #1a3a2a; }
+  .cat-asociacion .icon { background: #3a2a0a; }
+  .cat-publico .icon { background: #2a1a4a; }
+  .cat-horizontal .icon { background: #0a2a3a; }
+  .cat-fideicomiso .icon { background: #3a0a2a; }
+
+  .cat-notarial .card-title { color: #f08080; }
+  .cat-comercial .card-title { color: #80b0f0; }
+  .cat-cooperativa .card-title { color: #80d0a0; }
+  .cat-asociacion .card-title { color: #f0c060; }
+  .cat-publico .card-title { color: #c0a0f0; }
+  .cat-horizontal .card-title { color: #80d0e8; }
+  .cat-fideicomiso .card-title { color: #f080c0; }
+
+  /* HIDDEN STATE */
+  .card.hidden { display: none; }
+
+  /* NO RESULTS */
+  #no-results {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  /* ACCENT BAR on card left border */
+  .card {
+    border-left: 4px solid transparent;
+  }
+  .cat-notarial { border-left-color: #f08080; }
+  .cat-comercial { border-left-color: #80b0f0; }
+  .cat-cooperativa { border-left-color: #80d0a0; }
+  .cat-asociacion { border-left-color: #f0c060; }
+  .cat-publico { border-left-color: #c0a0f0; }
+  .cat-horizontal { border-left-color: #80d0e8; }
+  .cat-fideicomiso { border-left-color: #f080c0; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #6a8bb0;
+    padding: 1.5rem;
+    border-top: 1px solid #1e4080;
+  }
+
+  @media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Referencia rápida</div>
+  <h1>¿Qué <span>Prompt</span> usar?</h1>
+  <p>Identificá el tipo de entidad o documento y usá el prompt correspondiente.</p>
+</header>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </svg>
+    <input type="text" id="search" placeholder="Buscá: S.A., Mutual, Municipalidad, Fideicomiso…" autocomplete="off">
+  </div>
+</div>
+
+<main>
+  <p class="section-intro">Hacé clic en cualquier etiqueta para copiarla • Usá el buscador para filtrar</p>
+
+  <div class="grid" id="grid">
+
+    <!-- PODERES NOTARIALES -->
+    <div class="card cat-notarial" data-keywords="poder notarial poderes general especial irrevocable judicial administracion representacion">
+      <div class="card-header">
+        <div class="icon">📜</div>
+        <div>
+          <div class="card-title">Poderes Notariales</div>
+          <div class="card-prompt-label">→ Prompt: Poderes Notariales</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tags">
+          <span class="tag">Poder Especial</span>
+          <span class="tag">Poder General Amplio de Administración</span>
+          <span class="tag">Poder General Amplio de Administración y Disposición</span>
+          <span class="tag">Poder de Administración y Gestiones Administrativas</span>
+          <span class="tag">Poder General Judicial</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOCIEDADES COMERCIALES -->
+    <div class="card cat-comercial" data-keywords="sociedad comercial sa sas sau sc sca sci s.a s.r.l srl sgr sgc liquidacion hecho extranjera irregular ute unipersonal civil pre-2015 simple seccion iv lgs 94 bis">
+      <div class="card-header">
+        <div class="icon">🏢</div>
+        <div>
+          <div class="card-title">Sociedades Comerciales</div>
+          <div class="card-prompt-label">→ Prompt: Sociedades Comerciales</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tags">
+          <span class="tag">Agrupación de Colaboración Empresaria (A.C.E.)</span>
+          <span class="tag">Sociedad Anónima (S.A.)</span>
+          <span class="tag">Sociedad por Acciones Simplificada (S.A.S.)</span>
+          <span class="tag">Sociedad Anónima Unipersonal (S.A.U.)</span>
+          <span class="tag">Sociedad Colectiva (S.C.)</span>
+          <span class="tag">Sociedad en Comandita por Acciones (S.C.A.)</span>
+          <span class="tag">Sociedad de Capital e Industria (S.C.I.)</span>
+          <span class="tag">Sociedad en Comandita Simple (S.C.S.)</span>
+          <span class="tag">Sociedad de Garantía Recíproca (S.G.R.)</span>
+          <span class="tag">Sociedad de Responsabilidad Limitada (S.R.L.)</span>
+          <span class="tag">Sociedad Simple — Sección IV</span>
+          <span class="tag">Sociedad Civil (pre-2015)</span>
+          <span class="tag">Sociedad de Hecho</span>
+          <span class="tag">Sociedad en Liquidación</span>
+          <span class="tag">Sociedad Extranjera (Art. 118 LGS)</span>
+          <span class="tag">Sociedad Extranjera (Art. 123 LGS)</span>
+          <span class="tag">Sociedad Irregular</span>
+          <span class="tag">Unión Transitoria de Empresas (U.T.E.)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COOPERATIVAS Y MUTUALES -->
+    <div class="card cat-cooperativa" data-keywords="cooperativa mutual mutuales cooperativas federacion confederacion instituto nacional inaes trabajo vivienda credito consumo">
+      <div class="card-header">
+        <div class="icon">🤝</div>
+        <div>
+          <div class="card-title">Cooperativas y Mutuales</div>
+          <div class="card-prompt-label">→ Prompt: Cooperativas y Mutuales</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tags">
+          <span class="tag">Cooperativa de Trabajo</span>
+          <span class="tag">Cooperativa de Vivienda</span>
+          <span class="tag">Cooperativa de Crédito</span>
+          <span class="tag">Cooperativa de Consumo</span>
+          <span class="tag">Cooperativa Agropecuaria</span>
+          <span class="tag">Federación de Cooperativas</span>
+          <span class="tag">Confederación de Cooperativas</span>
+          <span class="tag">Mutual</span>
+          <span class="tag">Federación de Mutuales</span>
+          <span class="tag">Confederación de Mutuales</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASOCIACIONES CIVILES Y FUNDACIONES -->
+    <div class="card cat-asociacion" data-keywords="asociacion civil simple bolsa comercio camara empresarial confesion religiosa fundacion ong partido politico club deportivo obra social prepaga medicina">
+      <div class="card-header">
+        <div class="icon">🏛️</div>
+        <div>
+          <div class="card-title">Asoc. Civiles y Fundaciones</div>
+          <div class="card-prompt-label">→ Prompt: Asoc. Civiles y Fundaciones</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tags">
+          <span class="tag">Asociación Civil</span>
+          <span class="tag">Asociación Simple</span>
+          <span class="tag">Bolsa de Comercio</span>
+          <span class="tag">Cámara Empresarial</span>
+          <span class="tag">Cámara de Comercio</span>
+          <span class="tag">Club Deportivo / Social</span>
+          <span class="tag">Confesión Religiosa (no católica)</span>
+          <span class="tag">Fundación</span>
+          <span class="tag">Partido Político</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENTES PÚBLICOS -->
+    <div class="card cat-publico" data-keywords="ente publico ministerio secretaria subsecretaria auditoria sindicatura empresa estado universidad nacional defensoria poder judicial ministerio publico fiscal servicio exterior afip banco central gobierno provincia municipalidad intendencia comuna sindicato caja jubilacion colegio profesional confederacion consejo profesional consulado embajada federacion iglesia obra social gremial ente regulador ente binadional">
+      <div class="card-header">
+        <div class="icon">⚖️</div>
+        <div>
+          <div class="card-title">Entes Públicos</div>
+          <div class="card-prompt-label">→ Prompt: Entes Públicos</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tags" style="gap:0.3rem;">
+          <span class="tag" style="background:#2a1a4a;border-color:#8060c0;color:#c0a0f0;font-weight:600">Nivel Nacional</span>
+          <span class="tag">Ministerio</span>
+          <span class="tag">Secretaría / Subsecretaría</span>
+          <span class="tag">Auditoría General de la Nación</span>
+          <span class="tag">Sindicatura General de la Nación</span>
+          <span class="tag">Empresa del Estado</span>
+          <span class="tag">Sociedad del Estado</span>
+          <span class="tag">Organismo Descentralizado</span>
+          <span class="tag">Ente Autárquico</span>
+          <span class="tag">Ente Regulador</span>
+          <span class="tag">Universidad Nacional</span>
+          <span class="tag">Instituto Universitario Nacional</span>
+          <span class="tag">Defensoría del Pueblo</span>
+          <span class="tag">Poder Judicial</span>
+          <span class="tag">Min. Público Fiscal</span>
+          <span class="tag">Min. Público de la Defensa</span>
+          <span class="tag">Servicio Exterior</span>
+          <span class="tag">Agencia de Recaudación (AFIP/ARCA)</span>
+          <span class="tag">Banco Central</span>
+          <span class="tag">Banco Nación / Banco Provincia</span>
+          <span class="tag" style="background:#2a1a4a;border-color:#8060c0;color:#c0a0f0;font-weight:600;margin-top:0.35rem">Nivel Provincial/Municipal</span>
+          <span class="tag">Gobierno Provincial</span>
+          <span class="tag">Municipalidad</span>
+          <span class="tag">Intendencia / Comuna</span>
+          <span class="tag">Ente Intermunicipal</span>
+          <span class="tag">Ente Binacional</span>
+          <span class="tag">Escuela Pública Provincial</span>
+          <span class="tag">Escuela Pública Municipal</span>
+          <span class="tag">Colegio Público</span>
+          <span class="tag">Instituto de Educación Superior Público</span>
+          <span class="tag" style="background:#2a1a4a;border-color:#8060c0;color:#c0a0f0;font-weight:600;margin-top:0.35rem">Otras entidades públicas</span>
+          <span class="tag">Asoc. Sindical (1° grado)</span>
+          <span class="tag">Asoc. Sindical (2° grado - Federación)</span>
+          <span class="tag">Caja de Jubilación</span>
+          <span class="tag">Colegio Profesional</span>
+          <span class="tag">Confederación Sindical</span>
+          <span class="tag">Consejo Profesional</span>
+          <span class="tag">Consulado / Embajada</span>
+          <span class="tag">Federación Sindical</span>
+          <span class="tag">Iglesia Católica</span>
+          <span class="tag">Obra Social (Gremial/Nacional)</span>
+          <span class="tag">Obra Social (Ley 23.660)</span>
+          <span class="tag">Sindicato</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROPIEDAD HORIZONTAL -->
+    <div class="card cat-horizontal" data-keywords="propiedad horizontal consorcio club campo country condominio barrio privado conjunto inmobiliario tiempo compartido cementerio privado">
+      <div class="card-header">
+        <div class="icon">🏘️</div>
+        <div>
+          <div class="card-title">Propiedad Horizontal</div>
+          <div class="card-prompt-label">→ Prompt: Propiedad Horizontal</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tags">
+          <span class="tag">Consorcio de Prop. Horizontal</span>
+          <span class="tag">Consorcio PH — Edificio de Oficinas</span>
+          <span class="tag">Condominio</span>
+          <span class="tag">Club de Campo</span>
+          <span class="tag">Country</span>
+          <span class="tag">Barrio Privado / Cerrado</span>
+          <span class="tag">Conjunto Inmobiliario (CCyCN)</span>
+          <span class="tag">Tiempo Compartido</span>
+          <span class="tag">Cementerio Privado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIDEICOMISOS -->
+    <div class="card cat-fideicomiso" data-keywords="fideicomiso contrato fideicomisos financiero administracion garantia testamentario inmobiliario publico">
+      <div class="card-header">
+        <div class="icon">📋</div>
+        <div>
+          <div class="card-title">Fideicomisos</div>
+          <div class="card-prompt-label">→ Prompt: Fideicomisos</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tags">
+          <span class="tag">Fideicomiso de Administración</span>
+          <span class="tag">Fideicomiso de Garantía</span>
+          <span class="tag">Fideicomiso Financiero</span>
+          <span class="tag">Fideicomiso Inmobiliario</span>
+          <span class="tag">Fideicomiso Testamentario</span>
+          <span class="tag">Fideicomiso de Inversión</span>
+          <span class="tag">Fideicomiso Público</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="no-results">
+    😕 No se encontraron resultados. Intentá con otro término.
+  </div>
+</main>
+
+<footer>
+  Guía de referencia de prompts · Filtrá por tipo de entidad para usar el prompt correcto
+</footer>
+
+<script>
+  // Search filter
+  const input = document.getElementById('search');
+  const cards = document.querySelectorAll('.card');
+  const noResults = document.getElementById('no-results');
+
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    let visible = 0;
+    cards.forEach(card => {
+      const kw = card.dataset.keywords || '';
+      const title = card.querySelector('.card-title').textContent.toLowerCase();
+      const tags = card.querySelectorAll('.tag');
+      let tagText = '';
+      tags.forEach(t => tagText += ' ' + t.textContent.toLowerCase());
+      const match = !q || kw.includes(q) || title.includes(q) || tagText.includes(q);
+      card.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  });
+
+  // Copy tag on click
+  document.querySelectorAll('.tag').forEach(tag => {
+    tag.title = 'Clic para copiar';
+    tag.style.cursor = 'pointer';
+    tag.addEventListener('click', () => {
+      navigator.clipboard.writeText(tag.textContent).then(() => {
+        const orig = tag.textContent;
+        tag.textContent = '✓ copiado';
+        tag.style.background = '#d4f0d4';
+        setTimeout(() => {
+          tag.textContent = orig;
+          tag.style.background = '';
+        }, 1200);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
